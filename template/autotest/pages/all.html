@@ -23,9 +23,9 @@
             window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
                 console.log('File API test Init: Setting PERSISTENT FS.');
                 root = fileSystem.root; // set in file.tests.js
-                persistent_root = root;                //***ForAmsTest***//
+                persistent_root = root;                //***InitForExtension[com.polyvi.xface.extension.ams]***//
                 doCopy("test.zip", "test.zip");
-                doCopy("testUpdateHighVersion.zip", "testUpdateHighVersion.zip");                //***end***//
+                doCopy("testUpdateHighVersion.zip", "testUpdateHighVersion.zip");                //***EndInit***//
                 function runTest() {
                     // Once root is set up, fire off tests
                    var jasmineEnv = jasmine.getEnv();

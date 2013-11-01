@@ -18,7 +18,7 @@
  * under the License.
  *
 */
-
+var PLAT=getPlatform();
 var scripts = document.getElementsByTagName('script');
 var jsFilePath = scripts[scripts.length - 1].src.replace('base.js', 'xface.js');
 document.write('<script type="text/javascript" charset="utf-8" src="' + jsFilePath + '"><\/script>');
