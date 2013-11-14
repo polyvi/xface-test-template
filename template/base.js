@@ -66,7 +66,7 @@ function getPlatform(){
         return "ios";
     }
     if(navigator.userAgent.indexOf('Windows Phone') != -1){
-        return "WindowsPhone";
+        return "windowsphone";
     }
     if(navigator.userAgent.indexOf('Windows') != -1){
         return "all";
@@ -87,7 +87,7 @@ function isIOS(){
 
 function isWindowsPhone(){
     var platform = getPlatform();
-    return platform === "WindowsPhone";
+    return platform === "windowsphone";
 }
 
 var Popup = (function(window){
@@ -168,7 +168,7 @@ function showPlatformTag(parent){
     {
         if(isAndroid())
         {
-            var elems = parent.getElementsByTagName("WindowsPhone");
+            var elems = parent.getElementsByTagName("windowsphone");
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
@@ -176,11 +176,11 @@ function showPlatformTag(parent){
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
-            var elems = parent.getElementsByTagName("ios_WindowsPhone");
+            var elems = parent.getElementsByTagName("ios_windowsphone");
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
-            var elems = parent.getElementsByTagName("WindowsPhone_ios");
+            var elems = parent.getElementsByTagName("windowsphone_ios");
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
@@ -191,15 +191,15 @@ function showPlatformTag(parent){
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
-            var elems = parent.getElementsByTagName("WindowsPhone");
+            var elems = parent.getElementsByTagName("windowsphone");
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
-            var elems = parent.getElementsByTagName("android_WindowsPhone");
+            var elems = parent.getElementsByTagName("android_windowsphone");
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
-            var elems = parent.getElementsByTagName("WindowsPhone_android");
+            var elems = parent.getElementsByTagName("windowsphone_android");
             for(var i = 0; i < elems.length; i++){
                 elems[i].style["display"] = "none";
             }
