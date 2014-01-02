@@ -22,6 +22,8 @@ var PLAT=getPlatform();
 var scripts = document.getElementsByTagName('script');
 var jsFilePath = scripts[scripts.length - 1].src.replace('base.js', 'xface.js');
 document.write('<script type="text/javascript" charset="utf-8" src="' + jsFilePath + '"><\/script>');
+var statusBarJsFilePath = jsFilePath.replace('xface.js', 'statusbar-ajuster.js');
+document.write('<script type="text/javascript" charset="utf-8" src="' + statusBarJsFilePath + '"><\/script>');
 
 function backHome() {
 	if(isAndroid()) {
@@ -143,8 +145,11 @@ document.addEventListener("DOMContentLoaded",function(){
     var rightBtn = document.createElement("div");
     var leftBtn = document.createElement("div");
     showPlatformTag(document.body);
-    document.body.appendChild(leftBtn);
-    document.body.appendChild(rightBtn);
+    if (typeof jasmine == 'undefined') {
+        //只在manual tests页面显示"i"以及"?"
+        document.body.appendChild(leftBtn);
+        document.body.appendChild(rightBtn);
+    }
     leftBtn.id = "hLeftBtn";
     leftBtn.innerHTML = "i";
     rightBtn.id = "hRightBtn";
