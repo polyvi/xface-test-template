@@ -20,7 +20,14 @@
 */
 
 function requireAjustmentForStatusBar(){
-    return (isIOS() && parseFloat(window.device.version) >= 7.0 && StatusBar.isVisible) ? true : false;
+    if(isIOS() && parseFloat(window.device.version) >= 7.0){
+        if(!window.StatusBar){
+            alert('Please install StatusBar plugin!');
+            return false;
+        }
+        return StatusBar.isVisible;
+    }
+    return false;
 }
 
 function ajustStatusBarForManualTests(){
