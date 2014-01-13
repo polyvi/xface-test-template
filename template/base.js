@@ -168,6 +168,9 @@ document.addEventListener("DOMContentLoaded",function(){
 },false);
 
 function showPlatformTag(parent){
+    if(!parent){
+        return;
+    }
     var platform = getPlatform();
     if(platform !== "all")
     {
