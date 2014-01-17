@@ -20,10 +20,21 @@
 */
 var PLAT=getPlatform();
 var scripts = document.getElementsByTagName('script');
-var jsFilePath = scripts[scripts.length - 1].src.replace('base.js', 'xface.js');
-document.write('<script type="text/javascript" charset="utf-8" src="' + jsFilePath + '"><\/script>');
+var currentPath = scripts[scripts.length - 1].src;
+var jsFilePath = currentPath.replace('base.js', 'xface.js');
 var statusBarJsFilePath = jsFilePath.replace('xface.js', 'statusbar-ajuster.js');
-document.write('<script type="text/javascript" charset="utf-8" src="' + statusBarJsFilePath + '"><\/script>');
+var cordovaPath = jsFilePath;
+
+if (!window._doNotWriteCordovaScript) {
+    if (PLAT != "windows8") {
+        document.write('<script type="text/javascript" charset="utf-8" src="' + jsFilePath + '"><\/script>');
+        document.write('<script type="text/javascript" charset="utf-8" src="' + statusBarJsFilePath + '"><\/script>');
+    } else {
+        var s = document.createElement('script');
+        s.src = cordovaPath;
+        document.head.appendChild(s);
+    }
+}
 
 function backHome() {
 	if(isAndroid()) {
