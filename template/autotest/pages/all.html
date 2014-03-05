@@ -1,5 +1,25 @@
-<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.  See the NOTICE file distributed with this work for additional information regarding copyright ownership.  The ASF licenses this file to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at   http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.--><!DOCTYPE html><html><head>  <title>xFace: API Specs</title>
-  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=1.0;" />  <!-- Load jasmine -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>xFace: API Specs</title>
+  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=1.0;" />
+  <!-- Load jasmine -->
   <link href="../jasmine.css" rel="stylesheet"/>
   <script type="text/javascript" src="../jasmine.js"></script>
   <script type="text/javascript" src="../html/HtmlReporterHelpers.js"></script>
@@ -11,56 +31,80 @@
   <!-- Source -->
   <script type="text/javascript" src="../../base.js"></script>
   <!-- Load Test Runner -->
-  <script type="text/javascript" src="../test-runner.js"></script>    <!-- add test js here -->  
+  <script type="text/javascript" src="../test-runner.js"></script>
+  
+  <!-- add test js here -->
+  
   <script type="text/javascript">
-        var root, temp_root, persistent_root;
-        document.addEventListener('deviceready', function () {
-            // one-time retrieval of the root file system entry
-            var onError = function(e) {
-              console.log('[ERROR] Problem setting up root filesystem for test running! Error to follow.');
-              console.log(JSON.stringify(e));
-            };
-            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
-                console.log('File API test Init: Setting PERSISTENT FS.');
-                root = fileSystem.root; // set in file.tests.js
-                persistent_root = root;                //***InitForExtension[com.polyvi.xface.extension.ams]***//
-                doCopy("test.zip", "test.zip");
-                doCopy("testUpdateHighVersion.zip", "testUpdateHighVersion.zip");                //***EndInit***//
-                function runTest() {
-                    // Once root is set up, fire off tests
-                   var jasmineEnv = jasmine.getEnv();
-                   jasmineEnv.updateInterval = 1000;
-                   var htmlReporter = new jasmine.HtmlReporter();
-                   jasmineEnv.addReporter(htmlReporter);
-                   jasmineEnv.specFilter = function(spec) {
-                   return htmlReporter.specFilter(spec);
-                   };
-                   jasmineEnv.execute();
-                };
-                setTimeout(runTest,1000);
-            }, onError);
-            window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, function(fileSystem) {
-                console.log('File API test Init: Setting TEMPORARY FS.');
-                temp_root = fileSystem.root; // set in file.tests.js
-            }, onError);
-        }, false);
-        function doCopy(src,target) {
-            var targetFile = target;
-            root.getDirectory("appPackage", {create: true, exclusive: false}, gotDirEntry, fail);
-            root.getFile(src, {create: true, exclusive: false}, gotFileEntry, fail);
-            var directory;
-            function gotDirEntry(dirEntry) {
-                directory = dirEntry;
-            }
-            function gotFileEntry(fileEntry) {
-                fileEntry.copyTo(directory, targetFile, success, fail);
-            }
-            function success(entry) {
-            }        }
-        var fail = function(error) {
-        };
+    var root, temp_root, persistent_root, workspace_root;
+    document.addEventListener('deviceready', function () {
+        // one-time retrieval of the root file system entry
+        var onError = function(e) {
+          console.log('[ERROR] Problem setting up root filesystem for test running! Error to follow.');
+          console.log(JSON.stringify(e));
+        };
+        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
+            console.log('File API test Init: Setting PERSISTENT FS.');
+            root = fileSystem.root; // set in file.tests.js
+            persistent_root = root;
+
+            onFileSystemSuccess(fileSystem);
+
+            window.requestFileSystem(LocalFileSystem.APPWORKSPACE, 0,
+				function(fileSystem) {
+				  console.log('File API test Init: Setting APPWORKSPACE FS.');
+				  workspace_root = fileSystem.root;
+
+				  onFileSystemSuccess(fileSystem);
+
+				  function runTest() {
+				      var jasmineEnv = jasmine.getEnv();
+				      jasmineEnv.updateInterval = 1000;
+				      var htmlReporter = new jasmine.HtmlReporter();
+				      jasmineEnv.addReporter(htmlReporter);
+				      jasmineEnv.specFilter = function(spec) {
+				          return htmlReporter.specFilter(spec);
+				      };
+				      jasmineEnv.execute();
+				  }
+
+				  setTimeout(runTest,1000);
+				}, onError);
+        }, onError);
+
+        window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, function(fileSystem) {
+            console.log('File API test Init: Setting TEMPORARY FS.');
+            temp_root = fileSystem.root; // set in file.tests.js
+        }, onError);
+    }, false);
+
+    function onFileSystemSuccess(fileSystem) {
+        doCopy("test.zip", "test.zip", fileSystem);
+        doCopy("testUpdateHighVersion.zip", "testUpdateHighVersion.zip", fileSystem);
+    }
+
+    function doCopy(src, target, fileSystem) {
+        var targetFile = target;
+        fileSystem.root.getDirectory("appPackage", {create: true, exclusive: false}, gotDirEntry, fail);
+        fileSystem.root.getFile(src, {create: true, exclusive: false}, gotFileEntry, fail);
+        var directory;
+        function gotDirEntry(dirEntry) {
+            directory = dirEntry;
+        }
+        function gotFileEntry(fileEntry) {
+            fileEntry.copyTo(directory, targetFile, success, fail);
+        }
+        function success(entry) {
+        }
+    }
+    var fail = function(error) {
+        console.log('Autotest:Failed to copy file!');
+    }
+
   </script>
-</head><body>
+</head>
+<body>
   <a class="backBtn" onclick="backHome();">Back</a>
 </body>
-</html>
+</html>
+
